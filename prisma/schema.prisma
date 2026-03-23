@@ -1,0 +1,189 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// OPPORTUNITIES
+// ============================================
+
+model Opportunity {
+  id                String             @id @default(cuid())
+  title             String
+  description       String             @db.Text
+  organizationName  String
+  publishedAt       DateTime           @default(now())
+  deadline          DateTime?
+  startDate         DateTime?
+  endDate           DateTime?
+  location          String?
+  country           String?
+  city              String?
+  isRemote          Boolean            @default(false)
+  type              OpportunityType
+  status            OpportunityStatus  @default(ACTIVE)
+  sourceUrl         String             @unique
+  sourceName        String
+  slug              String?            @unique
+  language          String?
+
+  // AI enriched fields
+  disciplines       String[]           // ["Painting", "Sculpture", "Digital Art"]
+  benefits          Json?              // { fee: "1000 USD", accommodation: true }
+  requirements      String?            @db.Text
+  funding           String?            // "5,000 EUR"
+  enrichedByAI      Boolean            @default(false)
+
+  // Monitoring
+  scrapedAt         DateTime           @default(now())
+  sourceId          String?
+  source            Source?            @relation(fields: [sourceId], references: [id])
+
+  // Relations
+  savedBy           SavedOpportunity[]
+  changeHistory     ChangeHistory[]
+
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+// ============================================
+// SCRAPING SOURCES
+// ============================================
+
+model Source {
+  id              String        @id @default(cuid())
+  name            String        @unique  // "ResArtis", "ArtConnect"
+  url             String
+  isDynamic       Boolean       @default(false) // true = needs Playwright
+  crawlDelay      Int           @default(3)     // seconds between requests
+  isActive        Boolean       @default(true)
+  lastScrapedAt   DateTime?
+  opportunities   Opportunity[]
+  logs            ScrapingLog[]
+
+  createdAt       DateTime      @default(now())
+}
+
+// ============================================
+// SCRAPING MONITORING
+// ============================================
+
+model ScrapingLog {
+  id              String    @id @default(cuid())
+  sourceId        String
+  source          Source    @relation(fields: [sourceId], references: [id])
+  executedAt      DateTime  @default(now())
+  totalFound      Int       @default(0)
+  totalNew        Int       @default(0)
+  totalErrors     Int       @default(0)
+  successful      Boolean   @default(true)
+  errorMessage    String?
+  durationMs      Int?
+}
+
+// ============================================
+// USERS AND PROFILES
+// ============================================
+
+model User {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  name          String?
+  image         String?
+  type          UserType    @default(ARTIST)
+
+  // Artist profile
+  bio           String?     @db.Text
+  disciplines   String[]
+  location      String?
+  country       String?
+  careerStage   String?     // "emerging", "mid-career", "established"
+  website       String?
+
+  // Auth
+  emailVerified DateTime?
+
+  saved         SavedOpportunity[]
+  accounts      Account[]
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Account {
+  id                  String  @id @default(cuid())
+  userId              String
+  type                String
+  provider            String
+  providerAccountId   String
+  access_token        String? @db.Text
+  refresh_token       String? @db.Text
+  expires_at          Int?
+  user                User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model SavedOpportunity {
+  id              String      @id @default(cuid())
+  userId          String
+  opportunityId   String
+  hasApplied      Boolean     @default(false)
+  notes           String?
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  createdAt       DateTime    @default(now())
+
+  @@unique([userId, opportunityId])
+}
+
+// ============================================
+// CHANGE HISTORY
+// ============================================
+
+model ChangeHistory {
+  id              String      @id @default(cuid())
+  opportunityId   String
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  field           String      // "deadline"
+  previousValue   String?
+  newValue        String?
+  createdAt       DateTime    @default(now())
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum OpportunityType {
+  OPEN_CALL
+  RESIDENCY
+  GRANT
+  AWARD
+  JOB
+  TOOL
+  FUNDING
+}
+
+enum OpportunityStatus {
+  ACTIVE
+  UPCOMING
+  CLOSED
+  ARCHIVED
+}
+
+enum UserType {
+  ARTIST
+  ORGANIZATION
+  ADMIN
+}
