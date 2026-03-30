@@ -1,4 +1,5 @@
 import { getOpportunities } from '@/lib/db/opportunities'
+import SearchBar from '@/components/SearchBar'
 
 const TYPE_COLORS: Record<string, string> = {
   RESIDENCY: 'text-cyan-400 border-cyan-400/30 bg-cyan-400/10',
@@ -46,7 +47,7 @@ export default async function HomePage() {
           </p>
 
           {/* Buscador */}
-          <div style={{maxWidth:'42rem', margin:'0 auto 4rem'}}>
+          {/*<div style={{maxWidth:'42rem', margin:'0 auto 4rem'}}>
             <div style={{display:'flex', alignItems:'center', gap:'0.75rem', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'1rem', padding:'1rem 1.25rem'}}>
               <svg style={{width:'20px', height:'20px', color:'rgba(255,255,255,0.3)', flexShrink:0}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -54,7 +55,11 @@ export default async function HomePage() {
               <input type="text" placeholder="Search residencies, grants, open calls..." style={{background:'transparent', color:'white', outline:'none', width:'100%', fontSize:'1rem', border:'none'}} />
               <button style={{flexShrink:0, background:'linear-gradient(to right, #8b5cf6, #06b6d4)', color:'white', fontSize:'0.875rem', fontWeight:'600', padding:'0.5rem 1rem', borderRadius:'0.75rem', border:'none', cursor:'pointer'}}>Search</button>
             </div>
-          </div>
+          </div>*/}
+          
+          {/* Buscador */}
+          <SearchBar />
+
 
           {/* Estadísticas */}
           <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'1.5rem', maxWidth:'32rem', margin:'0 auto'}}>
