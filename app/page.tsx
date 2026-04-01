@@ -1,5 +1,6 @@
 import { getOpportunities } from '@/lib/db/opportunities'
 import SearchBar from '@/components/SearchBar'
+import OpportunityFilters from '@/components/OpportunityFilters'
 
 const TYPE_COLORS: Record<string, string> = {
   RESIDENCY: 'text-cyan-400 border-cyan-400/30 bg-cyan-400/10',
@@ -80,7 +81,7 @@ export default async function HomePage() {
       </section>
 
       {/* Grid */}
-      <section className="grid-section">
+      {/* <section className="grid-section">
         <div className="container-main">
           <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))', gap:'1rem'}}>
             {opportunities.map((opp) => (
@@ -107,6 +108,12 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
+      </section>*/}
+      {/* Grid con filtros */}
+      <section className="grid-section">
+        <div className="container-main">
+          <OpportunityFilters />
+          </div>
       </section>
 
     </main>
