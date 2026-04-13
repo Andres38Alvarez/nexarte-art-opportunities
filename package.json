@@ -6,30 +6,36 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@ai-sdk/google": "^3.0.52",
-    "@openrouter/ai-sdk-provider": "^2.3.3",
-    "@prisma/adapter-pg": "^7.5.0",
-    "@prisma/client": "^7.5.0",
-    "ai": "^6.0.134",
-    "axios": "^1.13.6",
+    "@openrouter/ai-sdk-provider": "^2.5.0",
+    "@tailwindcss/postcss": "^4.2.2",
+    "ai": "^6.0.153",
+    "axios": "^1.6.0",
     "cheerio": "^1.2.0",
-    "next": "^15.5.14",
-    "prisma": "^7.5.0",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "next": "^15.0.0",
+    "pg": "^8.20.0",
+    "postcss": "^8.5.9",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^4.2.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "prisma": "^7.7.0",
+    "typescript": "^5.0.0"
+  },
+  "pkg": {
+    "assets": [
+      "node_modules/.prisma/client/query-engine-*",
+      "node_modules/@prisma/engines/**"
+    ]
   }
 }

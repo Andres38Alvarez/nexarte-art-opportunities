@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { scrapeResArtis } from '@/lib/scrapers/sources/resartis'
 import { scrapeACA } from '@/lib/scrapers/sources/aca'
+import { scrapeColossal } from '@/lib/scrapers/sources/colossal'
 
 export async function GET(request: Request) {
   // Seguridad: verificar que la llamada viene de Vercel
@@ -17,6 +18,9 @@ export async function GET(request: Request) {
 
   const aca = await scrapeACA()
   results.push({ source: 'ACA', ...aca })
+
+  const colossal = await scrapeColossal()
+  results.push({ source: 'Colossal', ...colossal })
 
   return NextResponse.json({
     message: 'Cron job completed',
