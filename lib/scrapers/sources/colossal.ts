@@ -13,15 +13,22 @@ const MONTHLY_URLS = [
   'https://www.thisiscolossal.com/2026/01/february-2026-artist-open-calls-residencies-grants/',
 ]
 
+// Order matters here: detectType() returns on the FIRST match, and falls
+// back to OPEN_CALL if nothing else matches. 'open call' used to be checked
+// first, which meant almost everything on Colossal's combined "Open Calls,
+// Grants, Fellowships, Residencies and Awards" pages got tagged OPEN_CALL
+// before ever reaching the more specific keywords below — GRANT/AWARD/JOB/
+// FUNDING never got a chance to match. Check the specific categories first
+// and only fall back to OPEN_CALL (the function's default return) when none
+// of them apply.
 const TYPE_MAP: Record<string, string> = {
-  'open call': 'OPEN_CALL',
-  'grant': 'GRANT',
   'fellowship': 'GRANT',
-  'residenc': 'RESIDENCY',
+  'grant': 'GRANT',
+  'funding': 'FUNDING',
   'award': 'AWARD',
   'prize': 'AWARD',
   'job': 'JOB',
-  'funding': 'FUNDING',
+  'residenc': 'RESIDENCY',
 }
 
 function detectType(heading: string, title: string): string {

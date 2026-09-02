@@ -116,7 +116,7 @@ model User {
 
   saved         SavedOpportunity[]
   accounts      Account[]
-
+  sessions      Session[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
@@ -187,4 +187,20 @@ enum UserType {
   ARTIST
   ORGANIZATION
   ADMIN
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
